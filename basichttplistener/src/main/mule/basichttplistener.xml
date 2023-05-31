@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="0734994d-e06b-4ac8-85f9-1a0336c6aad3" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="basichttplistenerFlow" doc:id="8e6ffbd4-2906-4933-b2a3-8ea1d5eaa697" >
+		<http:listener doc:name="Listener" doc:id="c878bdac-2585-4eb4-b477-9f061ef3dc26" config-ref="HTTP_Listener_config1" path="/basics"/>
+		<logger level="INFO" doc:name="Logger" doc:id="db2d9d95-e337-4e1b-9f48-635eda95ab1c" message='#["This is my first api"]'/>
+		<set-payload value='#["This is the basic flow"]' doc:name="Set Payload" doc:id="7f201f2c-5c5e-4777-9bda-88741d8fdf18" />
+		<http:request method="GET" doc:name="Request" doc:id="79213879-7709-4e9c-87de-44266b5e334c" config-ref="HTTP_Request_configuration" path="/queryParams">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	empname : "vilasitha",
+	empid : 300352
+}]]]></http:query-params>
+		</http:request>
+	</flow>
+	<flow name="uriParams" doc:id="d8baa450-c79b-42cf-bf93-f02443da4e11" >
+		<http:listener doc:name="HTTP Get queryParms" doc:id="b24d88da-8c11-4f76-adad-81abef4c2ac0" config-ref="HTTP_Listener_config1" path="/queryParams"/>
+		<logger level="INFO" doc:name="Log Start" doc:id="18c253e1-6155-47be-ac58-627f502cceaf" message = '#["log START - " ++ flow.name]'/>
+		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  empid: attributes.queryParams.empid as Number,&#10;  empname: attributes.queryParams.empname&#10;}]' doc:name="Set Payload" doc:id="5a46c49e-b8bc-47e5-8030-33d634892b04" />
+	</flow>
+</mule>

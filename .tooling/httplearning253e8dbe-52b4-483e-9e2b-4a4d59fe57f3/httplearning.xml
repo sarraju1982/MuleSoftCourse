@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="httplearningFlow" doc:id="0507812d-dcdb-44d9-9c1b-6bdf24a32b21" >
+		<http:listener doc:name="uriParameters" doc:id="b3078614-bed3-4285-92e3-d17500a115b1" config-ref="HTTP_Listener_config" path="/uriParams/{bank}/{name}/{branch}"/>
+		<logger level="INFO" doc:name="Logger" doc:id="0538aa61-3ceb-4cc9-a6ef-814aa42f0abd" message='#[attributes.uriParams."bank"]'/>
+		<set-variable value="#[{&#10;	'bank':attributes.uriParams.'bank',&#10;	'name':attributes.uriParams.'name',	&#10;	'branch':attributes.uriParams.'branch'&#10;}]" doc:name="Bank Details" doc:id="da3258aa-085d-4cb2-bfb5-5eff14e72f86" variableName="bank_details"/>
+		<set-payload value="#[output application/json&#10;---&#10;{&#10;	bankDetails:vars.bank_details&#10;}]" doc:name="Set Payload" doc:id="6c92ad82-b242-47f2-83c3-28a14e00c90e" />
+	</flow>
+</mule>
